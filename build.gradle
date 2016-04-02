@@ -1,0 +1,61 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply from: 'deploy.gradle'
+
+group = 'com.github.intrigus.cocoja'
+version = '0.0.11-SNAPSHOT'
+archivesBaseName = "cocoja"
+
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.test.java.srcDirs = [ "test/" ]
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+//Get dependencies from Maven central repository
+repositories {
+    mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+
+//Project dependencies
+dependencies {
+	compile 'com.github.intrigus.mavigen:mavigen:0.0.11-SNAPSHOT'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.11'
+}
+
+task buildNatives(dependsOn: 'classes', type: JavaExec) {
+    main = 'com.intrigus.cocoja.CocojaBuild'
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom('cocoja').project {
+                name 'cocoja'
+                artifactId 'cocoja'
+                packaging 'jar'
+                description 'Java bindings to Cocoa'
+            }
+            pom('cocoja-natives').project {
+                name 'cocoja-natives'
+                artifactId 'cocoja-natives'
+                packaging 'jar'
+                description 'Natives for Cocoa'
+            }
+        }
+    }
+}
