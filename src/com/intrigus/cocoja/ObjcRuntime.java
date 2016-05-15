@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2016 See AUTHORS file.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 
 package com.intrigus.cocoja;
 
@@ -7,6 +22,7 @@ public class ObjcRuntime {
 	/*JNI
 	#import <Foundation/Foundation.h>
 	#import <objc/runtime.h>
+	#import <objc/message.h>
 	#import <JavaNativeFoundation/JavaNativeFoundation.h>	
 	*/
 	// @on
@@ -119,8 +135,25 @@ public class ObjcRuntime {
 	//@on
 
 	public static long objc_msgSend (Pointer theReceiver, Pointer theSelector, Object... arguments) {
-		return 0;
+		System.out.println("hsweser");
+		return _objc_msgSend(theReceiver.address, theSelector.address, arguments);
 	}
+
+	//@off
+	private static native long _objc_msgSend(long receiver, long selector, Object[] arguments);/*
+	return ptr_to_jlong(objc_msgSend(receiver, selector, arguments));
+	*/
+	//@on
+
+	/*public static long objc_msgSend (Pointer theReceiver, Pointer theSelector, String argument) {
+		return _objc_msgSend(theReceiver.address, theSelector.address, argument);
+	}
+
+	//@off
+	private static native long _objc_msgSend(long receiver, long selector, String argument);/*
+	return ptr_to_jlong(objc_msgSend(receiver, selector, argument));
+	*/
+	//@on*/
 
 	public static double objc_msgSend_fpret (Pointer self, Pointer op, Object... arguments) {
 		return 0;
@@ -227,13 +260,27 @@ public class ObjcRuntime {
 		return false;
 	}
 
-	public static String sel_getName (Pointer aSelector) {
-		return null;
+	public static String sel_getName (Pointer selector) {
+		return _sel_getName(selector.address);
 	}
 
+	//@off
+	private static native String _sel_getName(long address);/*
+	void* selector = jlong_to_ptr(address);
+	const char * selectorName = sel_getName(selector);
+	return (*env)->NewStringUTF(env, selectorName);
+	*/
+	//@on
+
 	public static Pointer sel_getUid (String name) {
-		return null;
+		return new Pointer(_sel_getUid(name));
 	}
+
+	//@off
+	private static native long _sel_getUid(String name);/*
+	return ptr_to_jlong(sel_getUid(name));
+	*/
+	//@on
 
 	public static boolean sel_isEqual (Pointer lhs, Pointer rhs) {
 		return false;

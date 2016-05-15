@@ -16,26 +16,10 @@
 
 package com.intrigus.cocoja;
 
-public class Pointer {
-	public long address;
+public class RuntimeUtil {
 
-	public Pointer (long address) {
-		this.address = address;
+	public static String getCString (long address) {
+		return null;
+
 	}
-
-	public String getFromCString () {
-		return _getFromCString(address);
-	}
-
-	//@off
-	private static native String _getFromCString (long address);/*	
-	return (*env)->NewStringUTF(env, address);
-	*/
-	//@on
-
-	@Override
-	public String toString () {
-		return "Pointer [address=" + address + "]";
-	}
-
 }

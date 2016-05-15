@@ -1,0 +1,20 @@
+<project name="cocoja-natives" basedir="." default="all">
+	<target name="clean">
+		<ant antfile="build-macosx64.xml" target="clean"/>
+
+	</target>
+	
+	<target name="compile-natives">
+		<ant antfile="build-macosx64.xml"/>
+
+	</target>
+	
+	<target name="pack-natives">
+		<jar destfile="../libs/cocoja-natives.jar">
+			<fileset dir="../libs/macosx64" includes="libcocoja64.dylib"/>
+
+		</jar>
+	</target>
+
+	<target name="all" depends="compile-natives,pack-natives"/>
+</project>
